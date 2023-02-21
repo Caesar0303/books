@@ -7,21 +7,40 @@
     <title>Document</title>
 </head>
 <body>
+    <?php
+    $genre = [
+        0 => "Литература",
+        1 =>"Фантастика",
+        2 =>"Документация",
+        3 =>"Научная фантастика"
+    ];
+    ?>
     <form action="">
         <input type="text" placeholder="Номер" name="number">
         <input type="text" placeholder="Название" name="name">
         <input type="text" placeholder="Автор" name="author">
-        <input type="text" placeholder="Жанр" name="genre">
+        <select name="genre"> 
+            <option disabled selected >Жанр</option>
+            <?php 
+            foreach($genre as $key => $item) {
+                
+                echo '<option value=' . "$key" . '>' . "$genre[$key]" . '</option>';
+            }
+            ?>
+        </select>
         <button>Сохранить</button>
     </form>
     <?php 
     // write
-      $bookInfo = [$_GET['number'],$_GET['name'],$_GET['author'],$_GET['genre']];
-      $searilazed = serialize($bookInfo);
-      
-      $books = fopen('books.txt', 'a+');
-      fwrite($books,$searilazed . PHP_EOL);
-      fclose($books);
+      var_dump($_GET['genre']);  
+      if (isset($_GET['genre'])) {
+        $bookInfo = [$_GET['number'],$_GET['name'],$_GET['author'],$_GET['genre']];
+        $searilazed = serialize($bookInfo);
+        $id = $_GET['genre'];
+      }
+      $data = fopen('data.txt', 'a+');
+      fwrite($data,$searilazed . PHP_EOL);
+      fclose($data);
     //read
     ?>
     <table>
@@ -41,22 +60,22 @@
                 </th>
             </tr>
             <?php 
-              $books = fopen('books.txt', 'r');
-              if ($books) {
-                  while (($line = fgets($books)) == true) {
-                      $bookInfo = unserialize(($line));
+              $data = fopen('data.txt', 'r');
+              if ($data) {
+                  while (($line = fgets($data)) == true) {
+                      $bookInfo = unserialize(trim($line));
             ?>
  
                 <tr>
                     <td><?= $bookInfo[0] ?></td>
                     <td><?= $bookInfo[1] ?></td>
                     <td><?= $bookInfo[2] ?></td>
-                    <td><?= $bookInfo[3] ?></td>
+                    <td><?= $genre[$bookInfo[3]] ?></td>
                 </tr>
               <?php 
                   }
                 }
-                fclose($books);
+                fclose($data);
               ?>
         </tbody>
     </table>
